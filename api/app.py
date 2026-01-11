@@ -39,7 +39,12 @@ def auth():
 def exec_cmd():
     cmd = request.json.get("cmd")
     # Command Injection
-    output = subprocess.check_output(cmd, shell=True)
+    ALLOWED_COMMANDS = ["ls", "date"]
+
+    if cmd not in ALLOWED_COMMANDS:
+        return {"error": "Command not allowed"}, 400
+
+    output = subprocess.check_output([cmd], shell=False)
     return {"output": output.decode()}
 
 
